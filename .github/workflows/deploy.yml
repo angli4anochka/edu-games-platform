@@ -1,0 +1,59 @@
+name: Deploy
+
+# Деплой монорепо uniplay-games (backend FastAPI/uvicorn + frontend Next.js) через self-hosted runner на VM.
+# На push в main: checkout -> rsync в боевую папку -> backend (pip install + restart) + frontend (next build + restart).
+#
+# >>> TODO подтвердить на VM в сессии (этот проект НЕ под PM2): <<<
+#   - APP_DIR (реальный путь боевой папки)
+#   - КАК запущены процессы: systemd? pm2? screen/nohup? -> от этого зависят команды рестарта ниже
+#   - backend: uvicorn app.main:app :8000   |   frontend: next :3002
+# Ниже заглушки рестарта помечены TODO — заменим на реальные после осмотра сервера.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-edu
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, edu]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync to live dir, build & restart
+        run: |
+          set -euo pipefail
+          APP_DIR="/home/ubuntu/edu-games-platform"   # TODO confirm on VM
+
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'node_modules' \
+            --exclude '.next' \
+            --exclude 'venv' --exclude 'backend/venv' \
+            --exclude '.env' --exclude '.env.*' \
+            --exclude '*.db' --exclude '*.sqlite' \
+            ./ "$APP_DIR/"
+
+          # --- Backend (FastAPI / uvicorn :8000) ---
+          cd "$APP_DIR/backend"
+          if [ -d venv ]; then source venv/bin/activate; fi
+          pip install -r requirements.txt
+          # TODO рестарт backend — заменить на реальный (пример для systemd):
+          #   sudo systemctl restart edu-backend
+          # или pm2 restart edu-backend / kill+nohup
+          echo "⚠️  TODO: рестарт backend не настроен — заменить после осмотра VM"
+
+          # --- Frontend (Next.js :3002) ---
+          cd "$APP_DIR/frontend"
+          npm install
+          npm run build
+          # TODO рестарт frontend — заменить на реальный:
+          #   sudo systemctl restart edu-frontend   (или pm2 restart edu-frontend)
+          echo "⚠️  TODO: рестарт frontend не настроен — заменить после осмотра VM"
+
+          echo "ℹ️  edu-games-platform: код синхронизирован и собран. Рестарт — доделать на VM."
