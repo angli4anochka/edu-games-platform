@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LegalFooter } from "@/components/legal/LegalFooter";
 
 export function MaintenanceGate() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export function MaintenanceGate() {
   }
 
   return (
+    <div className="min-h-screen bg-[#321b12]">
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 text-center" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,.13), transparent 32%), radial-gradient(circle at 80% 75%, rgba(255,180,90,.18), transparent 35%), linear-gradient(135deg, #321b12 0%, #6f321f 48%, #b64f25 100%)" }}>
       <button type="button" onClick={() => setOpen(true)} className="relative z-10 max-w-4xl cursor-pointer border-0 bg-transparent" aria-label="Войти">
         <div className="mb-8 text-7xl sm:text-8xl" aria-hidden="true">🦖</div>
@@ -38,6 +40,9 @@ export function MaintenanceGate() {
         </div>
       )}
     </main>
+    <LegalFooter dark />
+    </div>
   );
 }
+
 

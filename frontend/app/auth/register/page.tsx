@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
@@ -14,6 +14,7 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     role: 'teacher' as 'teacher' | 'student',
+    consent: false,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,7 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target instanceof HTMLInputElement && e.target.type === 'checkbox' ? e.target.checked : e.target.value,
     });
   };
 
@@ -164,6 +165,10 @@ export default function RegisterPage() {
                 </select>
               </div>
 
+              <label className="flex items-start gap-3 rounded-xl border border-gray-200 p-4 text-sm text-gray-700">
+                <input id="consent" name="consent" type="checkbox" required checked={formData.consent} onChange={handleChange} className="mt-1 h-4 w-4" />
+                <span>Я даю <Link href="/personal-data-consent" target="_blank" className="font-semibold text-blue-700 underline">согласие на обработку персональных данных</Link> и подтверждаю, что ознакомилась(ся) с <Link href="/privacy" target="_blank" className="font-semibold text-blue-700 underline">Политикой обработки персональных данных</Link>.</span>
+              </label>
               {/* Submit Button */}
               <button
                 type="submit"
@@ -230,3 +235,4 @@ export default function RegisterPage() {
     </Layout>
   );
 }
+

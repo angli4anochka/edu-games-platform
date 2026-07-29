@@ -2,7 +2,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
-import { MaintenanceGate } from "@/components/MaintenanceGate";
+import { PublicAccessGate } from "@/components/PublicAccessGate";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -23,7 +23,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const hasAccess = Boolean(secret && safeEqual(suppliedToken, expectedToken));
   return (
     <html lang="ru" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full">{hasAccess ? children : <MaintenanceGate />}</body>
+      <body className="min-h-full">{hasAccess ? children : <PublicAccessGate>{children}</PublicAccessGate>}</body>
     </html>
   );
 }
+
