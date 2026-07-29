@@ -7,6 +7,7 @@ const publicPaths = new Set(["/privacy", "/personal-data-consent", "/cookies", "
 
 export function PublicAccessGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  return publicPaths.has(pathname) ? children : <MaintenanceGate />;
+  const isPublicBingo = pathname.startsWith("/play/bingo/");
+  return publicPaths.has(pathname) || isPublicBingo ? children : <MaintenanceGate />;
 }
 
