@@ -13,7 +13,7 @@ export function MaintenanceGate() {
     event.preventDefault();
     setLoading(true);
     setError("");
-    const response = await fetch("/api/maintenance-login", { method: "POST", body: new FormData(event.currentTarget) });
+    const response = await fetch("/maintenance-login", { method: "POST", body: new FormData(event.currentTarget) });
     setLoading(false);
     if (!response.ok) { setError("Неверный логин или пароль"); return; }
     router.refresh();
@@ -40,3 +40,4 @@ export function MaintenanceGate() {
     </main>
   );
 }
+
